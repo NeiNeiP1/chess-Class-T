@@ -1,34 +1,19 @@
 #ifndef BOARD_H
 #define BOARD_H
-
-#include <QWidget>
-#include <QPainter>
-#include <QPixmap>
-#include <memory>
-#include <pieza.h>
-#include <iostream>
-#include <QtWidgets>
-namespace Ui {
-class Board;
-}
-
-class Board : public QWidget
+#include <QGraphicsRectItem>
+#include "pieza.h"
+class Board
 {
-    Q_OBJECT
-
-public:
-    explicit Board(QWidget *parent = nullptr);
-    ~Board();
-
-    void paintEvent(QPaintEvent *event) override;
-
 private:
-    Ui::Board *ui;
-    QPixmap BoardIcon;
-    std:: unique_ptr<Pieza> fichas;
-
-    void mousePressEvent(QMouseEvent *event) override;
-
+    QList <Pieza *> blancas; //Lista de Piezas Blancas
+    QList <Pieza *> negras; //Lista de Piezas Negras
+public:
+    Board();
+    void tablero(int x, int y); //Hacer el tablero según las medidas
+    void ponerFB(); //Método para colocar las Fichas Blancas
+    void ponerFN(); //Método para colocar las Fichas Negras
+    void agregarPieza(); //Método de agregar las piezas
+    void reset(); //Resetear el juego
 };
 
 #endif // BOARD_H
