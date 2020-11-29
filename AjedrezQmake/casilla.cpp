@@ -6,12 +6,12 @@
 extern Juego *game;
 Casilla::Casilla(QGraphicsItem *parent):QGraphicsRectItem(parent)
 {
-    //making the Square CHess Box
-    setRect(0,0,100,100);
+    //Casilla del Tablero
+    setRect(0,0,100,100); //Medida
     brush.setStyle(Qt::SolidPattern);
     setZValue(-1);
-    setHayPieza(false);
-    setColorPieza("NONE");
+    setHayPieza(false); //Defecto no Hay Pieza
+    setColorPieza("NONE"); //Color para Pieza
     currentPiece = NULL;
 }
 
@@ -22,55 +22,54 @@ Casilla::~Casilla()
 
 void Casilla::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-      //  qDebug() << getChessPieceColor();
-        //Deselecting counter part of ChessPiece
+
+        //Deseleccionar contraparte de la Pieza
         if(currentPiece == game->pieceToMove && currentPiece){
 
             currentPiece->mousePressEvent(event);
             return;
         }
 
-        //if selected
+        //Si es seleccionada
         if(game->pieceToMove){
-            //if same team
+            //Si es del mismo equipo
             if(this->getColorPieza() == game->pieceToMove->getSide())
                 return;
-            //removing the eaten piece
+            //Quitar la Pieza Comida
             QList <Casilla *> movLoc = game->pieceToMove->moveLocation();
-            //TO make sure the selected box is in move zone
+
             int check = 0;
             for(size_t i = 0, n = movLoc.size(); i < n;i++) {
-                if(movLoc[i] == this) {
+                if(movLoc[i] == this) { //Comprueba si la casilla elegida está en la zona para moverse
                     check++;
 
                 }
             }
-            // if not prsent return
+            //Si no hay opción de movida sale
             if(check == 0)
                 return;
-            //change the color back to normal
+            //Cambia el color al normal
              game->pieceToMove->decolor();
-             //make the first move false applicable for pawn only
+             //Solo para el Peón el movimiento puede ser falso
              game->pieceToMove->firstMove = false;
-             //this is to eat or consume the enemy present inn the movable region
-            if(this->getHayPieza()){
-                this->currentPiece->setIsPlaced(false);
+            if(this->getHayPieza()){ //Si hay una pieza del enemigo
+                this->currentPiece->setIsPlaced(false); //Se reemplaza
                 this->currentPiece->setCurrentBox(NULL);
-                game->fichaComida(this->currentPiece);
+                game->fichaComida(this->currentPiece); //Se consume la ficha
 
             }
-            //changing the new stat and resetting the previous left region
+            //Cambia el estado y reestablece la región izquierda anterior
             game->pieceToMove->getCurrentBox()->setHayPieza(false);
             game->pieceToMove->getCurrentBox()->currentPiece = NULL;
             game->pieceToMove->getCurrentBox()->resetColor();
             setPieza(game->pieceToMove);
 
             game->pieceToMove = NULL;
-            //changing turn
+            //Cambia Turno
             game->changeTurn();
             comprobarHaque();
         }
-        //Selecting couterpart of the chessPiece
+       // Selección de la contraparte de la pieza de ajedrez
         else if(this->getHayPieza())
         {
             this->currentPiece->mousePressEvent(event);
