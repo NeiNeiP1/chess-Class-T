@@ -5,9 +5,10 @@
 class Board
 {
 private:
+
+public:
     QList <Pieza *> blancas; //Lista de Piezas Blancas
     QList <Pieza *> negras; //Lista de Piezas Negras
-public:
     Board();
     void tablero(int x, int y); //Hacer el tablero según las medidas
     void ponerFB(); //Método para colocar las Fichas Blancas

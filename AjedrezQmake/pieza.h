@@ -1,20 +1,41 @@
 #ifndef PIEZA_H
 #define PIEZA_H
-#include <QLabel>
-#include <QPixmap>
-namespace ui{
-class Pieza;
-}
-class Pieza : public QLabel
-{
-    Q_OBJECT
-public:
-    explicit Pieza(QWidget *parent =nullptr);
-    virtual ~Pieza(){};
 
+#include <QGraphicsPixmapItem>
+#include "casilla.h"
+#include <QGraphicsSceneMouseEvent>
+
+class Casilla;
+class Pieza:public QGraphicsPixmapItem
+{
+public:
+    Pieza(QString team = "",QGraphicsItem *parent = 0);
+
+    void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    void setCasilla(Casilla *box);
+
+    Casilla *getCasilla() ;
+
+    QString getEquipo() ;
+    void setEquipo( QString value);
+    virtual void setImage() = 0;
+
+    bool getLugar() ;
+    void setLugar(bool value);
+
+    QList <Casilla *> moveLocation();
+    virtual void moves() = 0;
+    void decolor();
+
+    bool firstMove;
+
+    bool boxSetting(Casilla *box);
 protected:
-    ui::Pieza *ui;
-    QPixmap PiezaIcon;
+    Casilla *currentBox;
+    QString equipo;
+    bool lugar;
+    QList <Casilla *> location;
+
 };
 
-#endif // PIEZA_H
+#endif

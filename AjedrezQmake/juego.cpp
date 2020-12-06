@@ -19,7 +19,7 @@ Juego::Juego(QWidget *parent ):QGraphicsView(parent)
     brush.setStyle(Qt::SolidPattern);
     brush.setColor(Qt::gray); //Color en espacio vacio
     setBackgroundBrush(brush);
-    pieceToMove = NULL; //Ninguna pieza a mover
+    pieza = NULL; //Ninguna pieza a mover
 
     //Texto Turno
     turno = new QGraphicsTextItem();
@@ -39,12 +39,12 @@ Juego::Juego(QWidget *parent ):QGraphicsView(parent)
 
 }
 
-void Juego::drawChessBoard()
+void Juego::dibujarTablero()
 {
-    tablero = new Board();
+    tabla = new Board();
     tablaComida(0,0,Qt::gray); //Posición y Color de Caja Fichas comidas del lado de los Blancos
     tablaComida(1100,0,Qt::gray); //Posición y Color de Caja Fichas comidas del lado de los Negras
-    tablero->tablero(width()/2-400,50); //Posición del Tablero
+    tabla->tablero(width()/2-400,50); //Posición del Tablero
 }
 //Metodo actualizar Fichas Blancas Comidas
 void Juego::blancaComida()
@@ -77,7 +77,7 @@ void Juego::negraComida()
 //Método de Comer Pieza
 void Juego::fichaComida(Pieza *piece)
 {
-    if(piece->getSide() == "WHITE") { //Si la pieza es blanca
+    if(piece->getEquipo() == "Blanco") { //Si la pieza es blanca
         comidasB.append(piece); //En la Lista de Fichas Blancas Comidas se guarda
         Rey *g = dynamic_cast <Rey *>(piece); //Si la ficha era el rey
         if(g){
@@ -97,7 +97,7 @@ void Juego::fichaComida(Pieza *piece)
         }
         negraComida(); //Método para actualizar las fichas comidas en la vista
     }
-    alivePiece.removeAll(piece); //Remover de las fichas vivas la comida
+    pVivas.removeAll(piece); //Remover de las fichas vivas la comida
 }
 
 void Juego::addToScene(QGraphicsItem *item)
@@ -142,15 +142,15 @@ void Juego::start()
     reyBlanco->setPos(70,10); //Posición
     reyBlanco->setDefaultTextColor(Qt::white); //Color Texto
     reyBlanco->setFont(QFont("Impact",50)); //Estilo Tamaño
-    reyBlanco->setPlainText("L"); //Contexto
+    reyBlanco->setPlainText("1P"); //Contexto
     addToScene(reyBlanco);  //Añadir a Escena
     QGraphicsTextItem* reyNegro = new QGraphicsTextItem(); //Rey Negro Item Vista
     reyNegro->setPos(1170,10); //Posición
     reyNegro->setDefaultTextColor(Qt::black); //Color Texto
     reyNegro->setFont(QFont("Impact",50)); //Estilo Tamaño
-    reyNegro->setPlainText("Kira"); //Contexto
+    reyNegro->setPlainText("2P"); //Contexto
     addToScene(reyNegro); //Añadir a Escena
-    tablero->agregarPieza(); //Agregar las Piezas al Tablero
+    tabla->agregarPieza(); //Agregar las Piezas al Tablero
 }
 //Menú de Inicio
 void Juego::menu()
@@ -193,7 +193,7 @@ void Juego::menu()
     quitButton->setPos(qxPos,qyPos);
     connect(quitButton, SIGNAL(clicked()),this,SLOT(close())); //Señal al dar click de cerrar
     addToScene(quitButton); //Añadir a la escena
-    drawChessBoard(); //Dibujar el tablero de fondo sin piezas
+    dibujarTablero(); //Dibujar el tablero de fondo sin piezas
     listG.append(quitButton); //Añadir lista de item
 }
 //Método Fichas Comida
@@ -214,8 +214,8 @@ void Juego::gameOver()
 {
     removeAll();
     setTurno("Blanco");
-    alivePiece.clear();
-    tablero->reset();
+    pVivas.clear();
+    tabla->reset();
     //Titulo
     QGraphicsTextItem *titleText = new QGraphicsTextItem("Fin del Juego");
     QFont titleFont("Impact" , 50); //Fuente y Tamaño
@@ -243,13 +243,14 @@ void Juego::gameOver()
     quitButton->setPos(qxPos,qyPos);
     connect(quitButton, SIGNAL(clicked()),this,SLOT(close())); //Señal al dar click de cerrar
     addToScene(quitButton); //Añadir a la escena
-    drawChessBoard(); //Dibujar el tablero de fondo sin piezas
+    dibujarTablero(); //Dibujar el tablero de fondo sin piezas
     listG.append(quitButton); //Añadir lista de item
 
 
 
 
 }
+
 //Método para remover todos los items graficos
 void Juego::removeAll(){
     QList<QGraphicsItem*> itemsList = escena->items();

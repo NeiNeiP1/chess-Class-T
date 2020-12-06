@@ -4,15 +4,15 @@
         <file>figur.png</file>
         <file>rey.png</file>
         <file>rey1.png</file>
-        <file>bishop.png</file>
-        <file>bishop1.png</file>
-        <file>horse.png</file>
-        <file>horse1.png</file>
+        <file>alfil.png</file>
+        <file>alfil1.png</file>
+        <file>caballo.png</file>
+        <file>caballo1.png</file>
         <file>peon.png</file>
         <file>peon1.png</file>
-        <file>queen.png</file>
-        <file>queen1.png</file>
-        <file>rook.png</file>
-        <file>rook1.png</file>
+        <file>reina.png</file>
+        <file>reina1.png</file>
+        <file>torre.png</file>
+        <file>torre1.png</file>
     </qresource>
 </RCC>

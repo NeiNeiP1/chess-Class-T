@@ -25,6 +25,7 @@ public:
     bool getHayPieza(); //Método de si hay pieza
     void setHayPieza(bool valor,Pieza *p = 0); //Cambiar método
     void comprobarHaque();
+    void peonCambio();
     QString getColorPieza();
     void setColorPieza(QString valor);
     int rowLoc;

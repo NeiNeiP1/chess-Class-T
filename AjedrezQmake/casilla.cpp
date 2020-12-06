@@ -2,7 +2,8 @@
 #include "juego.h"
 #include <QDebug>
 #include "rey.h"
-
+#include "peon.h"
+#include "reina.h"
 extern Juego *game;
 Casilla::Casilla(QGraphicsItem *parent):QGraphicsRectItem(parent)
 {
@@ -23,20 +24,20 @@ Casilla::~Casilla()
 void Casilla::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
 
-        //Deseleccionar contraparte de la Pieza
-        if(currentPiece == game->pieceToMove && currentPiece){
+        //Deseleccionar la Pieza
+        if(currentPiece == game->pieza && currentPiece){
 
             currentPiece->mousePressEvent(event);
             return;
         }
 
-        //Si es seleccionada
-        if(game->pieceToMove){
-            //Si es del mismo equipo
-            if(this->getColorPieza() == game->pieceToMove->getSide())
+        //Si ya hay pieza elegida a mover
+        if(game->pieza){
+            //Si la pieza de la casilla el color es la misma que la elegida Salta
+            if(this->getColorPieza() == game->pieza->getEquipo())
                 return;
-            //Quitar la Pieza Comida
-            QList <Casilla *> movLoc = game->pieceToMove->moveLocation();
+            //Guardar la posible posicion de la pieza
+            QList <Casilla *> movLoc = game->pieza->moveLocation();
 
             int check = 0;
             for(size_t i = 0, n = movLoc.size(); i < n;i++) {
@@ -48,32 +49,70 @@ void Casilla::mousePressEvent(QGraphicsSceneMouseEvent *event)
             //Si no hay opción de movida sale
             if(check == 0)
                 return;
-            //Cambia el color al normal
-             game->pieceToMove->decolor();
-             //Solo para el Peón el movimiento puede ser falso
-             game->pieceToMove->firstMove = false;
+            //Resetea el color
+             game->pieza->decolor();
+             //Cambia el que ya hizo su primer movimiento
+             game->pieza->firstMove = false;
             if(this->getHayPieza()){ //Si hay una pieza del enemigo
-                this->currentPiece->setIsPlaced(false); //Se reemplaza
-                this->currentPiece->setCurrentBox(NULL);
+                this->currentPiece->setLugar(false); //Se reemplaza
+                this->currentPiece->setCasilla(NULL);
                 game->fichaComida(this->currentPiece); //Se consume la ficha
 
             }
-            //Cambia el estado y reestablece la región izquierda anterior
-            game->pieceToMove->getCurrentBox()->setHayPieza(false);
-            game->pieceToMove->getCurrentBox()->currentPiece = NULL;
-            game->pieceToMove->getCurrentBox()->resetColor();
-            setPieza(game->pieceToMove);
+            //Cambia el estado de la pieza en donde estaba antes.
+            game->pieza->getCasilla()->setHayPieza(false);
+            game->pieza->getCasilla()->currentPiece = NULL;
+            game->pieza->getCasilla()->resetColor();
 
-            game->pieceToMove = NULL;
+            peonCambio();
+
+
             //Cambia Turno
             game->changeTurn();
             comprobarHaque();
         }
-       // Selección de la contraparte de la pieza de ajedrez
+       //Si no habia pieza seleccionada hará accion de seleccionar pieza
         else if(this->getHayPieza())
         {
             this->currentPiece->mousePressEvent(event);
         }
+}
+void Casilla::peonCambio(){
+    Peon * p = dynamic_cast<Peon *> (game->pieza);
+    if(p){
+        if(game->pieza->getEquipo()=="Blanco"){
+            if(game->pieza->getCasilla()->rowLoc==1){
+                Reina *r=new Reina("Blanco");
+                game->pVivas.removeAll(game->pieza);
+                game->pVivas.append(r);
+                game->tabla->blancas.append(r);
+                game->addToScene(r);
+                game->removeFromScene(game->pieza);
+                setPieza(r);
+
+            }
+            else
+                setPieza(game->pieza);
+        }
+        else {
+            if(game->pieza->getCasilla()->rowLoc==6){
+                Reina *r=new Reina("Negro");
+                game->pVivas.removeAll(game->pieza);
+                game->pVivas.append(r);
+                game->tabla->negras.append(r);
+                game->addToScene(r);
+                game->removeFromScene(game->pieza);
+                setPieza(r);
+
+            }
+            else
+                setPieza(game->pieza);
+
+        }
+    }
+    else
+        setPieza(game->pieza);
+    game->pieza = NULL;
 }
 //SetColor
 void Casilla::setColor(QColor c)
@@ -86,7 +125,7 @@ void Casilla::setPieza(Pieza *p)
 {
 
     p->setPos(x()+50- p->pixmap().width()/2  ,y()+50-p->pixmap().width()/2);
-    p->setCurrentBox(this);
+    p->setCasilla(this);
     setHayPieza(true,p);
     currentPiece = p;
 
@@ -115,15 +154,14 @@ void Casilla::setHayPieza(bool valor, Pieza *p)
 {
     hayPieza = valor;
     if(valor)
-        setColorPieza(p->getSide());
+        setColorPieza(p->getEquipo());
     else
         setColorPieza("NONE");
 }
 
-void Casilla::comprobarHaque()
-{
+void Casilla::comprobarHaque(){
     bool cam = false;
-    QList <Pieza *> piezas = game->alivePiece; //Piezas del Juego
+    QList <Pieza *> piezas = game->pVivas; //Piezas del Juego
     for(size_t i = 0,n=piezas.size(); i < n; i++ ) {
 
         Rey * p = dynamic_cast<Rey *> (piezas[i]); //Comprueba si la clase de la Lista es Rey
@@ -136,15 +174,15 @@ void Casilla::comprobarHaque()
         for(size_t j = 0,n = casi.size(); j < n; j ++) {
             Rey * p = dynamic_cast<Rey *> (casi[j]->currentPiece); //Si en la casillas hay un rey
             if(p) {
-                if(p->getSide() == piezas[i]->getSide())//Y si es el mismo get side
+                if(p->getEquipo() == piezas[i]->getEquipo())//Y si es el mismo get Equipo
                     continue; //Salta
                 casi[j]->setColor(Qt::blue); //De lo contrario se cambia el color de la casilla a azul
-                piezas[i]->getCurrentBox()->setColor(Qt::darkRed); //El color de la ficha que dejó en haque en rojo oscuro
+                piezas[i]->getCasilla()->setColor(Qt::darkRed); //El color de la ficha que dejó en haque en rojo oscuro
                 if(!game->haque->isVisible())//Si aun no hubo un haque antes
                     game->haque->setVisible(true); //se actualiza a que hay un haque
                 else{
                     casi[j]->resetColor();  //De lo contrario reiniciar el color base
-                    piezas[i]->getCurrentBox()->resetColor();
+                    piezas[i]->getCasilla()->resetColor();
                     game->gameOver(); //Se acaba el juego
                 }
                 cam=true;
@@ -157,7 +195,7 @@ void Casilla::comprobarHaque()
     if(!cam){
         game->haque->setVisible(false); //Se quita el haque
         for(size_t i = 0,n=piezas.size(); i < n; i++ )
-           piezas[i]->getCurrentBox()->resetColor(); //Se actualiza el color de las casillas
+           piezas[i]->getCasilla()->resetColor(); //Se actualiza el color de las casillas
     }
 }
 //Get del Color de la Pieza
