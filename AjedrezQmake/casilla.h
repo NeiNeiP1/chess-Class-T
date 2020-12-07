@@ -31,6 +31,7 @@ public:
     int rowLoc;
     int colLoc;
     Pieza * currentPiece;
+    QString letra;
 };
 
 #endif // CASILLA_H

@@ -3,6 +3,7 @@
 #include <QPixmap>
 #include "rey.h"
 #include <QDebug>
+
 Juego::Juego(QWidget *parent ):QGraphicsView(parent)
 {
 
@@ -28,13 +29,7 @@ Juego::Juego(QWidget *parent ):QGraphicsView(parent)
     turno->setFont(QFont("Impact",25)); //Fuente y Tamaño
     turno->setPlainText("Turno del BLANCO"); //Contexto
 
-    //Texto Haque
-    haque = new QGraphicsTextItem();
-    haque->setPos(width()/2+100,3);  //Posición X Y
-    haque->setDefaultTextColor(Qt::yellow); //Color Texto
-    haque->setFont(QFont("Impact",30)); //Fuente y Tamaño
-    haque->setPlainText("HAQUE MATE"); //Contexto
-    haque->setVisible(false); //Oculto
+
     setTurno("Blanco"); //Colocar turno de Blancos
 
 }
@@ -83,7 +78,7 @@ void Juego::fichaComida(Pieza *piece)
         if(g){
 
             haque->setPlainText("Equipo Negro Gana"); //Las fichas Negras ganan
-            gameOver(); //Fin del Juego
+            gameOver(0); //Fin del Juego
         }
         blancaComida(); //Método para actualizar las fichas comidas en la vista
     }
@@ -93,7 +88,7 @@ void Juego::fichaComida(Pieza *piece)
         if(g){
 
             haque->setPlainText("Equipo Blanco Gana"); //Las fichas Blancas ganan
-            gameOver(); //Fin del juego
+            gameOver(1); //Fin del juego
         }
         negraComida(); //Método para actualizar las fichas comidas en la vista
     }
@@ -123,20 +118,30 @@ void Juego::setTurno(QString value) //Cambiar Turno
 
 void Juego::changeTurn() //Cambio de Turno
 {
-    if(getTurno() == "Blanco") //Del turno blanco al del negro
+    if(getTurno() == "Blanco"){ //Del turno blanco al del negro
         setTurno("Negro");
-    else
+        star->setPos(1260,20); //Posición
+    }
+    else{
         setTurno("Blanco"); //Sino del negro al blanco
+        star->setPos(160,20); //Posición
+    }
     turno->setPlainText("Turno del " + getTurno()); //Actualiza el texto a segun el turno
 
 }
 //Método de Inicio
 void Juego::start()
 {
+
     for(size_t i =0, n = listG.size(); i < n; i++) //Remover de la escena los items
         removeFromScene(listG[i]);
-
-    addToScene(turno); //Añadir Texto turno
+    //Texto Haque
+    haque = new QGraphicsTextItem();
+    haque->setPos(width()/2+100,3);  //Posición X Y
+    haque->setDefaultTextColor(Qt::yellow); //Color Texto
+    haque->setFont(QFont("Impact",30)); //Fuente y Tamaño
+    haque->setPlainText("HAQUE MATE"); //Contexto
+    haque->setVisible(false); //Oculto
     addToScene(haque); //Añadir Texto Haque
     QGraphicsTextItem* reyBlanco = new QGraphicsTextItem(); //Rey Blanco Item Vista
     reyBlanco->setPos(70,10); //Posición
@@ -151,21 +156,48 @@ void Juego::start()
     reyNegro->setPlainText("2P"); //Contexto
     addToScene(reyNegro); //Añadir a Escena
     tabla->agregarPieza(); //Agregar las Piezas al Tablero
+    star= new QGraphicsPixmapItem();
+    star->setPixmap(QPixmap(":/images/star.png")); //Muestra al Rey Blanco
+    star->setPos(160,20); //Posición
+    addToScene(star);//Añadir
+    //Botón De Renuncia Blanco
+    Button * playButton = new Button("Renuncia");
+    int pxPos = width()/2 - playButton->boundingRect().width()/2-550; //Posición X
+    int pyPos = 700; //Posición Y
+    playButton->setPos(pxPos,pyPos);
+    connect(playButton,SIGNAL(clicked()) , this , SLOT(renunciaB())); //Señal al dar click de iniciar
+    addToScene(playButton); //Añadir a la escena
+    listG.append(playButton); //Añadir lista de item
+    //Botón De Renuncia Blanco
+    Button * playButton2 = new Button("Renuncia");
+    pxPos = width()/2 - playButton->boundingRect().width()/2+550; //Posición X
+    pyPos = 700; //Posición Y
+    playButton2->setPos(pxPos,pyPos);
+    connect(playButton2,SIGNAL(clicked()) , this , SLOT(renunciaN())); //Señal al dar click de iniciar
+    addToScene(playButton2); //Añadir a la escena
+    listG.append(playButton2); //Añadir lista de item
+
+
+
 }
+void Juego::renunciaB(){
+    haque->setPlainText("Equipo Negro Gana"); //Las fichas Negras ganan
+    gameOver(0);
+}
+void Juego::renunciaN(){
+    haque->setPlainText("Equipo Blanco Gana"); //Las fichas Negras ganan
+    gameOver(1);
+}
+
 //Menú de Inicio
 void Juego::menu()
 {
-    QGraphicsPixmapItem *p = new QGraphicsPixmapItem();
-    p->setPixmap(QPixmap(":/images/rey1.png")); //Muestra al Rey Blanco
-    p->setPos(420,170); //Posición
-    addToScene(p);//Añadir
-    listG.append(p);//Añadir lista de item
 
-    QGraphicsPixmapItem *p1 = new QGraphicsPixmapItem();
-    p1->setPixmap(QPixmap(":/images/rey.png")); //Muestra al Rey Negro
-    p1->setPos(920,170); //Posición
-    addToScene(p1);//Añadir
-    listG.append(p1);//Añadir lista de item
+    QGraphicsPixmapItem *star2 = new QGraphicsPixmapItem();
+    star2->setPixmap(QPixmap(":/images/star.png")); //Muestra al Rey Blanco
+    star2->setPos(670,100); //Posición
+    addToScene(star2);//Añadir
+    listG.append(star2);//Añadir lista de item
 
     //Titulo
     QGraphicsTextItem *titleText = new QGraphicsTextItem("--Ajedrez--");
@@ -195,6 +227,16 @@ void Juego::menu()
     addToScene(quitButton); //Añadir a la escena
     dibujarTablero(); //Dibujar el tablero de fondo sin piezas
     listG.append(quitButton); //Añadir lista de item
+    QGraphicsTextItem* letra= new QGraphicsTextItem();
+    letra->setPlainText(" A           B          C          D          E          F          G          H");
+    letra->setPos(width()/2-370,5); //Se coloca la posición con shift
+    letra->setFont(QFont("Arial",20));
+    addToScene(letra); //Se añade a la vista
+    QGraphicsTextItem* letra2= new QGraphicsTextItem();
+    letra2->setPlainText(" A           B          C          D          E          F          G          H");
+    letra2->setPos(width()/2-370,850); //Se coloca la posición con shift
+    letra2->setFont(QFont("Arial",20));
+    addToScene(letra2); //Se añade a la vista
 }
 //Método Fichas Comida
 void Juego::tablaComida(int x, int y,QColor color)
@@ -210,14 +252,23 @@ void Juego::tablaComida(int x, int y,QColor color)
 
 
 //Método del Fin del Juego
-void Juego::gameOver()
+void Juego::gameOver(int i)
 {
+    QGraphicsTextItem *text=haque;
     removeAll();
     setTurno("Blanco");
     pVivas.clear();
     tabla->reset();
+
+    addToScene(text);
     //Titulo
     QGraphicsTextItem *titleText = new QGraphicsTextItem("Fin del Juego");
+    if(i==1){
+        titleText->setPlainText("Blancos Ganan");
+    }
+    else{
+        titleText->setPlainText("Negros Ganan");
+    }
     QFont titleFont("Impact" , 50); //Fuente y Tamaño
     titleText->setFont( titleFont); //Actualizar
     int xPos = width()/2 - titleText->boundingRect().width()/2; //Posición X
@@ -225,8 +276,9 @@ void Juego::gameOver()
     titleText->setPos(xPos,yPos);
     addToScene(titleText);//Añadir
     listG.append(titleText);//Añadir lista de item
-
-
+    haque=text;
+    addToScene(haque);
+    listG.append(haque);
     //Botón De Inicio
     Button * playButton = new Button("Reiniciar");
     int pxPos = width()/2 - playButton->boundingRect().width()/2; //Posición X

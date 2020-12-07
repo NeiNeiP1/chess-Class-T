@@ -183,7 +183,10 @@ void Casilla::comprobarHaque(){
                 else{
                     casi[j]->resetColor();  //De lo contrario reiniciar el color base
                     piezas[i]->getCasilla()->resetColor();
-                    game->gameOver(); //Se acaba el juego
+                    if(casi[j]->currentPiece->getEquipo()=="Blanco")
+                        game->gameOver(0); //Se acaba el juego
+                    else
+                        game->gameOver(1); //Se acaba el juego
                 }
                 cam=true;
 

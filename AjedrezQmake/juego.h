@@ -15,7 +15,7 @@ private:
     QString turn; //Cambio de Turno
     QList <QGraphicsItem *> listG;
     QGraphicsTextItem * turno;
-
+    QGraphicsPixmapItem *star;
 
 public:
     Juego(QWidget *parent = 0);
@@ -40,11 +40,13 @@ public:
     QGraphicsTextItem *haque; //Muestra de Haque
     QList <Pieza *> pVivas;
 
-    void gameOver();
+    void gameOver(int i);
     void removeAll();
     void menu();
 public slots:
     void start();
+    void renunciaB();
+    void renunciaN();
 
 };
 

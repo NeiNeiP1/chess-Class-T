@@ -28,7 +28,90 @@ void Board::tablero(int x,int y){
             else //Si no
                 casilla ->setColorOriginal(Qt::white); //Será de color blanca
             game->addToScene(casilla); //Se añade a la vista
-
+            QGraphicsTextItem* num= new QGraphicsTextItem();
+            QGraphicsTextItem* num2= new QGraphicsTextItem();
+            switch (i){
+                case 0:
+                    num->setPlainText("8");
+                    num->setPos(game->width()/2-430,80); //Se coloca la posición con shift
+                    num->setFont(QFont("Arial",20));
+                    game->addToScene(num);
+                    num2->setPlainText("8");
+                    num2->setPos(1120,80); //Se coloca la posición con shift
+                    num2->setFont(QFont("Arial",20));
+                    game->addToScene(num2);
+                    break;
+                case 1:
+                    num->setPlainText("7");
+                    num->setPos(game->width()/2-430,180); //Se coloca la posición con shift
+                    num->setFont(QFont("Arial",20));
+                    game->addToScene(num);
+                    num2->setPlainText("7");
+                    num2->setPos(1120,180); //Se coloca la posición con shift
+                    num2->setFont(QFont("Arial",20));
+                    game->addToScene(num2);
+                    break;
+                case 2:
+                    num->setPlainText("6");
+                    num->setPos(game->width()/2-430,280); //Se coloca la posición con shift
+                    num->setFont(QFont("Arial",20));
+                    game->addToScene(num);
+                    num2->setPlainText("6");
+                    num2->setPos(1120,280); //Se coloca la posición con shift
+                    num2->setFont(QFont("Arial",20));
+                    game->addToScene(num2);
+                    break;
+                case 3:
+                    num->setPlainText("5");
+                    num->setPos(game->width()/2-430,380); //Se coloca la posición con shift
+                    num->setFont(QFont("Arial",20));
+                    game->addToScene(num);
+                    num2->setPlainText("5");
+                    num2->setPos(1120,380); //Se coloca la posición con shift
+                    num2->setFont(QFont("Arial",20));
+                    game->addToScene(num2);
+                    break;
+                case 4:
+                    num->setPlainText("4");
+                    num->setPos(game->width()/2-430,480); //Se coloca la posición con shift
+                    num->setFont(QFont("Arial",20));
+                    game->addToScene(num);
+                    num2->setPlainText("4");
+                    num2->setPos(1120,480); //Se coloca la posición con shift
+                    num2->setFont(QFont("Arial",20));
+                    game->addToScene(num2);
+                    break;
+                case 5:
+                    num->setPlainText("3");
+                    num->setPos(game->width()/2-430,580); //Se coloca la posición con shift
+                    num->setFont(QFont("Arial",20));
+                    game->addToScene(num);
+                    num2->setPlainText("3");
+                    num2->setPos(1120,580); //Se coloca la posición con shift
+                    num2->setFont(QFont("Arial",20));
+                    game->addToScene(num2);
+                    break;
+                case 6:
+                    num->setPlainText("2");
+                    num->setPos(game->width()/2-430,680); //Se coloca la posición con shift
+                    num->setFont(QFont("Arial",20));
+                    game->addToScene(num);
+                    num2->setPlainText("2");
+                    num2->setPos(1120,680); //Se coloca la posición con shift
+                    num2->setFont(QFont("Arial",20));
+                    game->addToScene(num2);
+                    break;
+                case 7:
+                    num->setPlainText("1");
+                    num->setPos(game->width()/2-430,780); //Se coloca la posición con shift
+                    num->setFont(QFont("Arial",20));
+                    game->addToScene(num);
+                    num2->setPlainText("1");
+                    num2->setPos(1120,780); //Se coloca la posición con shift
+                    num2->setFont(QFont("Arial",20));
+                    game->addToScene(num2);
+                    break;
+            }
 
 
         }
