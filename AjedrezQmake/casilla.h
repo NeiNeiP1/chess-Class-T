@@ -13,6 +13,8 @@ private:
     QColor color;
     bool hayPieza; //Valor de si hay Pieza en la casilla
     QString colorP;
+
+    QString letra;
 public:
 
     Casilla(QGraphicsItem *parent=0);
@@ -26,12 +28,14 @@ public:
     void setHayPieza(bool valor,Pieza *p = 0); //Cambiar método
     void comprobarHaque();
     void peonCambio();
+    void enroque();
     QString getColorPieza();
     void setColorPieza(QString valor);
     int rowLoc;
     int colLoc;
     Pieza * currentPiece;
-    QString letra;
+    QString getLetra();
+    void setLetra(QString v);
 };
 
 #endif // CASILLA_H

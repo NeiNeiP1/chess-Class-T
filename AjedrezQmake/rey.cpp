@@ -5,6 +5,7 @@ extern Juego *game;
 Rey::Rey(QString team,QGraphicsItem *parent):Pieza(team,parent)
 {
     setImage();
+    firstMove=true;
 }
 
 void Rey::setImage()
@@ -109,6 +110,16 @@ void Rey::moves()
         if(location.last()->getHayPieza()){
             location.last()->setColor(Qt::red);
         }
+    }
+    //Movimiento Enroque derecha
+    if(firstMove&&!(game->caja[row][col+1]->getHayPieza())&&!(game->caja[row][col+2]->getHayPieza())&&(game->caja[row][col+3]->currentPiece->firstMove)){
+        location.append(game->caja[row][col+2]);
+        game->caja[row][col+2]->setColor(Qt::green);
+    }
+    //Movimiento Enroque Izquierda
+    if(firstMove&&!(game->caja[row][col-1]->getHayPieza())&&!(game->caja[row][col-2]->getHayPieza())&&!(game->caja[row][col-3]->getHayPieza())&&(game->caja[row][col-4]->currentPiece->firstMove)){
+        location.append(game->caja[row][col-2]);
+        game->caja[row][col-2]->setColor(Qt::green);
     }
     lugarSeguro();
 

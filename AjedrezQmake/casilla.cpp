@@ -52,6 +52,7 @@ void Casilla::mousePressEvent(QGraphicsSceneMouseEvent *event)
             //Resetea el color
              game->pieza->decolor();
              //Cambia el que ya hizo su primer movimiento
+             enroque();
              game->pieza->firstMove = false;
             if(this->getHayPieza()){ //Si hay una pieza del enemigo
                 this->currentPiece->setLugar(false); //Se reemplaza
@@ -63,7 +64,7 @@ void Casilla::mousePressEvent(QGraphicsSceneMouseEvent *event)
             game->pieza->getCasilla()->setHayPieza(false);
             game->pieza->getCasilla()->currentPiece = NULL;
             game->pieza->getCasilla()->resetColor();
-
+            game->registrar(this->getLetra(),game->pieza->getEquipo());
             peonCambio();
 
 
@@ -77,6 +78,29 @@ void Casilla::mousePressEvent(QGraphicsSceneMouseEvent *event)
             this->currentPiece->mousePressEvent(event);
         }
 }
+void Casilla::enroque(){
+    Rey *p=dynamic_cast<Rey *>(game->pieza);
+    if(p){
+        int fil=game->pieza->getCasilla()->rowLoc;
+        int colu=game->pieza->getCasilla()->colLoc;
+        if(game->pieza->firstMove&&(this->colLoc-2==game->pieza->getCasilla()->colLoc)){
+
+            Pieza *tor=game->caja[fil][colu+3]->currentPiece;
+            game->caja[fil][colu+3]->setHayPieza(false);
+            game->caja[fil][colu+3]->currentPiece = NULL;
+            game->caja[fil][colu+1]->setPieza(tor);
+            tor->setCasilla(game->caja[fil][colu+1]);
+        }
+        if(game->pieza->firstMove&&(this->colLoc+2==game->pieza->getCasilla()->colLoc)){
+            Pieza *tor=game->caja[fil][colu-4]->currentPiece;
+            game->caja[fil][colu-4]->setHayPieza(false);
+            game->caja[fil][colu-4]->currentPiece = NULL;
+            game->caja[fil][colu-1]->setPieza(tor);
+            tor->setCasilla(game->caja[fil][colu-1]);
+        }
+    }
+}
+//El cambio que tiene el peon al llegar al otro extremo del tablero
 void Casilla::peonCambio(){
     Peon * p = dynamic_cast<Peon *> (game->pieza);
     if(p){
@@ -200,6 +224,12 @@ void Casilla::comprobarHaque(){
         for(size_t i = 0,n=piezas.size(); i < n; i++ )
            piezas[i]->getCasilla()->resetColor(); //Se actualiza el color de las casillas
     }
+}
+QString Casilla::getLetra(){
+    return letra;
+}
+void Casilla::setLetra(QString v){
+    letra=v;
 }
 //Get del Color de la Pieza
 QString Casilla::getColorPieza()

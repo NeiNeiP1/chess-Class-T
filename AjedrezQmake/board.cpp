@@ -27,7 +27,7 @@ void Board::tablero(int x,int y){
                 casilla ->setColorOriginal(Qt::gray); //Será de color gris
             else //Si no
                 casilla ->setColorOriginal(Qt::white); //Será de color blanca
-            game->addToScene(casilla); //Se añade a la vista
+
             QGraphicsTextItem* num= new QGraphicsTextItem();
             QGraphicsTextItem* num2= new QGraphicsTextItem();
             switch (i){
@@ -112,8 +112,35 @@ void Board::tablero(int x,int y){
                     game->addToScene(num2);
                     break;
             }
+            switch (j) {
+                case 0:
+                    casilla->setLetra("A");
+                    break;
+                case 1:
+                    casilla->setLetra("B");
+                    break;
+                case 2:
+                    casilla->setLetra("C");
+                    break;
+                case 3:
+                    casilla->setLetra("D");
+                    break;
+                case 4:
+                    casilla->setLetra("E");
+                    break;
+                case 5:
+                    casilla->setLetra("F");
+                    break;
+                case 6:
+                    casilla->setLetra("G");
+                    break;
+                case 7:
+                    casilla->setLetra("H");
+                    break;
 
-
+            }
+            casilla->setLetra(casilla->getLetra()+QString::number(8-i));
+            game->addToScene(casilla); //Se añade a la vista
         }
     }
 

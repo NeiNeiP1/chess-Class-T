@@ -4,6 +4,7 @@ extern Juego *game;
 Torre::Torre(QString team, QGraphicsItem *parent):Pieza(team,parent)
 {
     setImage();
+    firstMove=true;
 }
 void Torre::setImage(){
     if(equipo=="Blanco")

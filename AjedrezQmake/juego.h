@@ -39,8 +39,12 @@ public:
     Casilla *caja[8][8];
     QGraphicsTextItem *haque; //Muestra de Haque
     QList <Pieza *> pVivas;
-
+    QList <QString> registroB;
+    QList <QString> registroN;
     void gameOver(int i);
+    void registrar(QString letra,QString team);
+    void registrarB(QString letra);
+    void registrarN(QString letra);
     void removeAll();
     void menu();
 public slots:
