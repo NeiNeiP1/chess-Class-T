@@ -20,7 +20,7 @@ void Board::tablero(int x,int y){
         {
             Casilla *casilla = new Casilla();
             game->caja[i][j] = casilla ; //Se guarda un array
-            casilla ->rowLoc = i; //Se guarda posición i
+            casilla ->filaLoc = i; //Se guarda posición i
             casilla ->colLoc = j; //Se guarda posición j
             casilla ->setPos(x+pos*j,y+pos*i); //Se coloca la posición con shift
             if((i+j)%2==0)//Si la casilla es par
@@ -235,7 +235,7 @@ void Board::reset() {
             Casilla *casilla =game->caja[i][j];
             casilla->setHayPieza(false); //Se borra la prueba de que habia una ficha en la casilla.
             casilla->setColorPieza("NONE"); //Se quita el color de ficha que estaba
-            casilla->currentPiece = NULL; //Se quita la pieza
+            casilla->pieza = NULL; //Se quita la pieza
             if(i < 2) { //En la primera y segunda fila se añadirán las piezas negras
 
                 casilla->setPieza(negras[n]); //Se guarda la posición de la pieza "n" y sus datos en la casilla

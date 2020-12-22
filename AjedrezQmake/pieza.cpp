@@ -41,12 +41,12 @@ void Pieza::mousePressEvent(QGraphicsSceneMouseEvent *event)
 void Pieza::setCasilla(Casilla *box)
 {
 
-    currentBox = box;
+    casilla = box;
 }
 
 Casilla *Pieza::getCasilla()
 {
-    return currentBox;
+    return casilla;
 }
 
 QString Pieza::getEquipo()
@@ -83,7 +83,7 @@ void Pieza::decolor()
 bool Pieza::boxSetting(Casilla *box)
 {
     if(box->getHayPieza()) {//Si en la casilla hay una pieza
-        Rey *q = dynamic_cast<Rey*>(location.last()->currentPiece);
+        Rey *q = dynamic_cast<Rey*>(location.last()->pieza);
         if(q){//Si es un rey
             box->setColor(Qt::blue); //Que muestre que estará en haque Azul
         }

@@ -16,7 +16,7 @@ void Reina::setImage()
 void Reina::moves()
 { //Actualizar Casillas a donde puede ir
     location.clear();
-    int row = this->getCasilla()->rowLoc; //Fila
+    int row = this->getCasilla()->filaLoc; //Fila
     int col = this->getCasilla()->colLoc; //Columna de Donde está
     QString team = this->getEquipo();//El equipo en donde está
    for(int i = row,j = col-1; j >= 0 ; j--){ //Para la Izquierda

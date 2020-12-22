@@ -12,7 +12,7 @@ void Caballo::setImage(){
         setPixmap(QPixmap(":/images/caballo.png"));
 }
 void Caballo::moves(){
-    int row=this->getCasilla()->rowLoc;
+    int row=this->getCasilla()->filaLoc;
     int col=this->getCasilla()->colLoc;
     QString team= this->getEquipo();
     //Posiciones de Arriba

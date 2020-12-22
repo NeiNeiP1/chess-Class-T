@@ -3,9 +3,12 @@
 #include <QPixmap>
 #include "rey.h"
 #include <QDebug>
-
+#include<QTimer>
+#include<unistd.h>
+#include<QTimeLine>
 Juego::Juego(QWidget *parent ):QGraphicsView(parent)
 {
+
 
     //Escena
     escena = new QGraphicsScene();
@@ -76,6 +79,7 @@ void Juego::registrarB(QString letra){
     for(size_t i=0,n=registroB.size();i<n;i++){
         QGraphicsTextItem* r=new QGraphicsTextItem();
         r->setPlainText(registroB[i]);
+        QString asc=registroB[i];
         if(i%4==0){
             y=y+20;
             x=0;
@@ -85,6 +89,7 @@ void Juego::registrarB(QString letra){
         addToScene(r);
         x++;
     }
+
 }
 void Juego::registrarN(QString letra){
     registroN.append(letra);
@@ -163,10 +168,15 @@ void Juego::changeTurn() //Cambio de Turno
     if(getTurno() == "Blanco"){ //Del turno blanco al del negro
         setTurno("Negro");
         star->setPos(230,10); //Posición
+        cronometro2->start(1000);
+        cronometro->stop();
     }
     else{
         setTurno("Blanco"); //Sino del negro al blanco
         star->setPos(1300,10); //Posición
+        cronometro2->stop();
+        cronometro->start(1000);
+
     }
     turno->setPlainText("Turno del " + getTurno()); //Actualiza el texto a segun el turno
 
@@ -218,17 +228,94 @@ void Juego::start()
     connect(playButton2,SIGNAL(clicked()) , this , SLOT(renunciaN())); //Señal al dar click de iniciar
     addToScene(playButton2); //Añadir a la escena
     listG.append(playButton2); //Añadir lista de item
+    cron1->setPlainText("00:00");
+    cron2->setPlainText("00:00");
+    addToScene(cron1);
+    cron1->setPos(width()/2+500,790);
+    cron1->setFont(QFont("Impact",20));
+    addToScene(cron2);
+    cron2->setPos(width()/2-600,790);
+    cron2->setFont(QFont("Impact",20));
+    cronometro=new QTimer(this);
+    cronometro2=new QTimer(this);
+    connect(cronometro, SIGNAL(timeout()), this, SLOT(activarTiempo()));
+    connect(cronometro2, SIGNAL(timeout()), this, SLOT(activarTiempo2()));
+    cronometro->start(1000);
 
+}
+void Juego::activarTiempo(){
+    QString s;
+    QString m;
+    if(comidasB.size()>14&&comidasN.size()>14){
+        contador++;
+    }
+    if(seg1==59){
+        if(min1+1==3){
+            min1=3;
+            seg1=0;
+            renunciaB();
+        }
+        else
+            min1++;
+        seg1=0;
+    }
+    else
+        seg1++;
+    s.setNum(seg1);
+    m.setNum(min1);
+    if(seg1<10){
+        s.prepend("0");
+    }
+    if(min1<10){
+        m.prepend("0");
+    }
+    cron1->setPlainText(m+":"+s);
+    cron1->setPos(width()/2+500,790);
+    cron1->setFont(QFont("Impact",20));
+    addToScene(cron1);
+}
+void Juego::activarTiempo2(){
+    QString s;
+    QString m;
+    if(comidasB.size()>14&&comidasN.size()>14){
+        contador++;
+        if(contador==30){
+            gameOver(2);
+        }
+    }
+    if(seg2==59){
+        if(min2+1==3){
 
-
+            min2=3;
+            seg2=0;
+            renunciaN();
+        }
+        else
+            min2++;
+        seg2=0;
+    }
+    else
+        seg2++;
+    s.setNum(seg2);
+    m.setNum(min2);
+    if(seg2<10){
+        s.prepend("0");
+    }
+    if(min2<10){
+        m.prepend("0");
+    }
+    cron2->setPlainText(m+":"+s);
+    cron2->setPos(width()/2-600,790);
+    cron2->setFont(QFont("Impact",20));
+    addToScene(cron2);
 }
 void Juego::renunciaB(){
     haque->setPlainText("Equipo Negro Gana"); //Las fichas Negras ganan
-    gameOver(0);
+    gameOver(1);
 }
 void Juego::renunciaN(){
     haque->setPlainText("Equipo Blanco Gana"); //Las fichas Negras ganan
-    gameOver(1);
+    gameOver(0);
 }
 
 //Menú de Inicio
@@ -283,12 +370,12 @@ void Juego::menu()
 //Método Fichas Comida
 void Juego::tablaComida(int x, int y,QColor color)
 {
-    deadHolder = new QGraphicsRectItem(x,y,300,900); //Medidas del Grafico Posicion
+    muerto = new QGraphicsRectItem(x,y,300,900); //Medidas del Grafico Posicion
     QBrush brush;
     brush.setStyle(Qt::SolidPattern);
     brush.setColor(color); //Color
-    deadHolder->setBrush(brush);
-    addToScene(deadHolder); //Añadir a la Escena
+    muerto->setBrush(brush);
+    addToScene(muerto); //Añadir a la Escena
 }
 
 
@@ -296,6 +383,12 @@ void Juego::tablaComida(int x, int y,QColor color)
 //Método del Fin del Juego
 void Juego::gameOver(int i)
 {
+    cronometro->stop();
+    cronometro2->stop();
+    seg1=0;
+    seg2=0;
+    min1=0;
+    min2=0;
     QGraphicsTextItem *text=haque;
     removeAll();
     setTurno("Blanco");
@@ -310,8 +403,11 @@ void Juego::gameOver(int i)
     if(i==1){
         titleText->setPlainText("Blancos Ganan");
     }
-    else{
+    else if(i==0){
         titleText->setPlainText("Negros Ganan");
+    }
+    else{
+        titleText->setPlainText("Empate");
     }
     QFont titleFont("Impact" , 50); //Fuente y Tamaño
     titleText->setFont( titleFont); //Actualizar

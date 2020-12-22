@@ -14,7 +14,7 @@ void Torre::setImage(){
 }
 void Torre::moves(){
     location.clear();
-    int row = this->getCasilla()->rowLoc;
+    int row = this->getCasilla()->filaLoc;
     int col = this->getCasilla()->colLoc;
     QString team = this->getEquipo();
     for(int i = row,j = col-1; j >= 0 ; j--){ //Para la Izquierda

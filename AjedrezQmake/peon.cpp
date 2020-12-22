@@ -23,7 +23,7 @@ void Peon::setImage()
 void Peon::moves()
 { //Limpiando sus casillas anteriores
     location.clear();
-    int row = this->getCasilla()->rowLoc; //Fila
+    int row = this->getCasilla()->filaLoc; //Fila
     int col = this->getCasilla()->colLoc; //Columna de donde está
     //Si la pieza es blanca
     if(this->getEquipo() == "Blanco"){

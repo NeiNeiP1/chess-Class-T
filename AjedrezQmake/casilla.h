@@ -17,6 +17,10 @@ private:
     QString letra;
 public:
 
+    int filaLoc;
+    int colLoc;
+    Pieza * pieza;
+
     Casilla(QGraphicsItem *parent=0);
     ~Casilla();
     void mousePressEvent(QGraphicsSceneMouseEvent *event); //Evento al seleccionar con Mouse
@@ -31,9 +35,6 @@ public:
     void enroque();
     QString getColorPieza();
     void setColorPieza(QString valor);
-    int rowLoc;
-    int colLoc;
-    Pieza * currentPiece;
     QString getLetra();
     void setLetra(QString v);
 };

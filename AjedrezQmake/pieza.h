@@ -8,33 +8,32 @@
 class Casilla;
 class Pieza:public QGraphicsPixmapItem
 {
+protected:
+    Casilla *casilla;
+    QString equipo;
+    bool lugar;
+    QList <Casilla *> location;
+
 public:
+    bool firstMove;
+    //Constructor
     Pieza(QString team = "",QGraphicsItem *parent = 0);
-
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    void setCasilla(Casilla *box);
-
+    //Casilla
     Casilla *getCasilla() ;
-
+    void setCasilla(Casilla *box);
+    //Equipo
     QString getEquipo() ;
     void setEquipo( QString value);
-    virtual void setImage() = 0;
-
+    //Lugar
     bool getLugar() ;
     void setLugar(bool value);
 
     QList <Casilla *> moveLocation();
     virtual void moves() = 0;
     void decolor();
-
-    bool firstMove;
-
+    virtual void setImage() = 0;
     bool boxSetting(Casilla *box);
-protected:
-    Casilla *currentBox;
-    QString equipo;
-    bool lugar;
-    QList <Casilla *> location;
 
 };
 

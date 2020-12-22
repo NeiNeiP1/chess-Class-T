@@ -20,7 +20,7 @@ void Rey::setImage()
 void Rey::moves()
 {//Actualizar Casillas a donde puede ir
     location.clear();
-    int row = this->getCasilla()->rowLoc; //Fila
+    int row = this->getCasilla()->filaLoc; //Fila
     int col = this->getCasilla()->colLoc; //Columna en Donde está
     QString team = this->getEquipo(); //El Equipo en donde está
     // Si no está a extremo izquierda y si no hay una pieza aliada a la izquierda
@@ -112,12 +112,12 @@ void Rey::moves()
         }
     }
     //Movimiento Enroque derecha
-    if(firstMove&&!(game->caja[row][col+1]->getHayPieza())&&!(game->caja[row][col+2]->getHayPieza())&&(game->caja[row][col+3]->currentPiece->firstMove)){
+    if(firstMove&&!(game->caja[row][col+1]->getHayPieza())&&!(game->caja[row][col+2]->getHayPieza())&&(game->caja[row][col+3]->pieza->firstMove)){
         location.append(game->caja[row][col+2]);
         game->caja[row][col+2]->setColor(Qt::green);
     }
     //Movimiento Enroque Izquierda
-    if(firstMove&&!(game->caja[row][col-1]->getHayPieza())&&!(game->caja[row][col-2]->getHayPieza())&&!(game->caja[row][col-3]->getHayPieza())&&(game->caja[row][col-4]->currentPiece->firstMove)){
+    if(firstMove&&!(game->caja[row][col-1]->getHayPieza())&&!(game->caja[row][col-2]->getHayPieza())&&!(game->caja[row][col-3]->getHayPieza())&&(game->caja[row][col-4]->pieza->firstMove)){
         location.append(game->caja[row][col-2]);
         game->caja[row][col-2]->setColor(Qt::green);
     }
@@ -136,10 +136,10 @@ void Rey::lugarSeguro() {
                 Peon *c = dynamic_cast<Peon *> (pList[i]) ;
                 for(size_t k = 0, n = location.size(); k < n; k++) {
                 if(c){
-                    int fil=pList[i]->getCasilla()->rowLoc; //Fila
+                    int fil=pList[i]->getCasilla()->filaLoc; //Fila
                     int colu=pList[i]->getCasilla()->colLoc; //Columna del Peon
                         if(pList[i]->getEquipo()=="Blanco"){
-                            if((fil>0)||((fil-1)==this->getCasilla()->rowLoc)){
+                            if((fil>0)||((fil-1)==this->getCasilla()->filaLoc)){
                                 if(colu>0){
                                     Casilla *cas=game->caja[fil-1][colu+1]; //El lado Noreste que si cae el rey muere
                                     if(cas==location[k]){
@@ -155,7 +155,7 @@ void Rey::lugarSeguro() {
                             }
                         }
                         else{
-                            if((fil<7)||((fil+1)==this->getCasilla()->rowLoc)){
+                            if((fil<7)||((fil+1)==this->getCasilla()->filaLoc)){
                                 if(colu>0){
                                     Casilla *cas=game->caja[fil+1][colu+1]; //El lado Sureste que si cae el rey muere
                                     if(cas==location[k]){

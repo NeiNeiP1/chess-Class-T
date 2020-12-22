@@ -14,7 +14,7 @@ void Alfil::setImage(){
 }
 void Alfil::moves(){
     location.clear();
-    int row =this->getCasilla()->rowLoc;
+    int row =this->getCasilla()->filaLoc;
     int col=this->getCasilla()->colLoc;
     QString team=this->getEquipo();
     for(int i = row-1,j = col-1; i >= 0 && j >=0; i--,j--){ //Para Diagonal Noroeste

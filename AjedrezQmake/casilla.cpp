@@ -13,7 +13,7 @@ Casilla::Casilla(QGraphicsItem *parent):QGraphicsRectItem(parent)
     setZValue(-1);
     setHayPieza(false); //Defecto no Hay Pieza
     setColorPieza("NONE"); //Color para Pieza
-    currentPiece = NULL;
+    pieza = NULL;
 }
 
 Casilla::~Casilla()
@@ -25,9 +25,9 @@ void Casilla::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
 
         //Deseleccionar la Pieza
-        if(currentPiece == game->pieza && currentPiece){
+        if(pieza == game->pieza && pieza){
 
-            currentPiece->mousePressEvent(event);
+            pieza->mousePressEvent(event);
             return;
         }
 
@@ -55,14 +55,14 @@ void Casilla::mousePressEvent(QGraphicsSceneMouseEvent *event)
              enroque();
              game->pieza->firstMove = false;
             if(this->getHayPieza()){ //Si hay una pieza del enemigo
-                this->currentPiece->setLugar(false); //Se reemplaza
-                this->currentPiece->setCasilla(NULL);
-                game->fichaComida(this->currentPiece); //Se consume la ficha
+                this->pieza->setLugar(false); //Se reemplaza
+                this->pieza->setCasilla(NULL);
+                game->fichaComida(this->pieza); //Se consume la ficha
 
             }
             //Cambia el estado de la pieza en donde estaba antes.
             game->pieza->getCasilla()->setHayPieza(false);
-            game->pieza->getCasilla()->currentPiece = NULL;
+            game->pieza->getCasilla()->pieza = NULL;
             game->pieza->getCasilla()->resetColor();
             game->registrar(this->getLetra(),game->pieza->getEquipo());
             peonCambio();
@@ -75,26 +75,26 @@ void Casilla::mousePressEvent(QGraphicsSceneMouseEvent *event)
        //Si no habia pieza seleccionada hará accion de seleccionar pieza
         else if(this->getHayPieza())
         {
-            this->currentPiece->mousePressEvent(event);
+            this->pieza->mousePressEvent(event);
         }
 }
 void Casilla::enroque(){
     Rey *p=dynamic_cast<Rey *>(game->pieza);
     if(p){
-        int fil=game->pieza->getCasilla()->rowLoc;
+        int fil=game->pieza->getCasilla()->filaLoc;
         int colu=game->pieza->getCasilla()->colLoc;
         if(game->pieza->firstMove&&(this->colLoc-2==game->pieza->getCasilla()->colLoc)){
 
-            Pieza *tor=game->caja[fil][colu+3]->currentPiece;
+            Pieza *tor=game->caja[fil][colu+3]->pieza;
             game->caja[fil][colu+3]->setHayPieza(false);
-            game->caja[fil][colu+3]->currentPiece = NULL;
+            game->caja[fil][colu+3]->pieza = NULL;
             game->caja[fil][colu+1]->setPieza(tor);
             tor->setCasilla(game->caja[fil][colu+1]);
         }
         if(game->pieza->firstMove&&(this->colLoc+2==game->pieza->getCasilla()->colLoc)){
-            Pieza *tor=game->caja[fil][colu-4]->currentPiece;
+            Pieza *tor=game->caja[fil][colu-4]->pieza;
             game->caja[fil][colu-4]->setHayPieza(false);
-            game->caja[fil][colu-4]->currentPiece = NULL;
+            game->caja[fil][colu-4]->pieza = NULL;
             game->caja[fil][colu-1]->setPieza(tor);
             tor->setCasilla(game->caja[fil][colu-1]);
         }
@@ -105,7 +105,7 @@ void Casilla::peonCambio(){
     Peon * p = dynamic_cast<Peon *> (game->pieza);
     if(p){
         if(game->pieza->getEquipo()=="Blanco"){
-            if(game->pieza->getCasilla()->rowLoc==1){
+            if(game->pieza->getCasilla()->filaLoc==1){
                 Reina *r=new Reina("Blanco");
                 game->pVivas.removeAll(game->pieza);
                 game->pVivas.append(r);
@@ -119,7 +119,7 @@ void Casilla::peonCambio(){
                 setPieza(game->pieza);
         }
         else {
-            if(game->pieza->getCasilla()->rowLoc==6){
+            if(game->pieza->getCasilla()->filaLoc==6){
                 Reina *r=new Reina("Negro");
                 game->pVivas.removeAll(game->pieza);
                 game->pVivas.append(r);
@@ -151,7 +151,7 @@ void Casilla::setPieza(Pieza *p)
     p->setPos(x()+50- p->pixmap().width()/2  ,y()+50-p->pixmap().width()/2);
     p->setCasilla(this);
     setHayPieza(true,p);
-    currentPiece = p;
+    pieza= p;
 
 
 }
@@ -196,7 +196,7 @@ void Casilla::comprobarHaque(){
         piezas[i]->decolor();
         QList <Casilla *> casi = piezas[i]->moveLocation(); //Ver el MoveLocation de la pieza
         for(size_t j = 0,n = casi.size(); j < n; j ++) {
-            Rey * p = dynamic_cast<Rey *> (casi[j]->currentPiece); //Si en la casillas hay un rey
+            Rey * p = dynamic_cast<Rey *> (casi[j]->pieza); //Si en la casillas hay un rey
             if(p) {
                 if(p->getEquipo() == piezas[i]->getEquipo())//Y si es el mismo get Equipo
                     continue; //Salta
@@ -207,7 +207,7 @@ void Casilla::comprobarHaque(){
                 else{
                     casi[j]->resetColor();  //De lo contrario reiniciar el color base
                     piezas[i]->getCasilla()->resetColor();
-                    if(casi[j]->currentPiece->getEquipo()=="Blanco")
+                    if(casi[j]->pieza->getEquipo()=="Blanco")
                         game->gameOver(0); //Se acaba el juego
                     else
                         game->gameOver(1); //Se acaba el juego
